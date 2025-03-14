@@ -46,27 +46,33 @@ export default function LoginForm() {
     const email = data.get('email');
     const password = data.get('password');
 
-    if (validateForm(email, password)) {
-      setAlertMessage('Login Successful');
-      setAlertSeverity('success');
-      setShowAlert(true);
-      console.log({ email, password });
-    } else {
-      setAlertMessage('Validation Failed');
-      setAlertSeverity('error');
-      setShowAlert(true);
-    }
+    // Add validation code here
+
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    console.log({
+      email: data.get('email'),
+      password: data.get('password'),
+    });
+    validateForm(event);
+    setShowAlert("Login Successful");
   };
 
   return (
     <>
-      <Snackbar
-        open={showAlert}
-        autoHideDuration={6000}
-        onClose={() => setShowAlert(false)}
-      >
-        <Alert severity={alertSeverity}>{alertMessage}</Alert>
-      </Snackbar>
+      {showAlert &&
+        <Snackbar
+          open={showAlert}
+          autoHideDuration={6000}
+          onClose={() => setShowAlert(false)}
+          message={showAlert}
+        >
+          <Alert>{showAlert}</Alert>
+        </Snackbar>
+      }
       <Grid
         item
         xs={false}

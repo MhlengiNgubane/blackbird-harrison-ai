@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import emailValidator from 'email-validator';
 import Alert from '@mui/material/Alert';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -8,33 +9,39 @@ import Grid from '@mui/material/Grid';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
 import logo from '../../assets/logo.svg';
-import emailValidator from 'email-validator';
 
 export default function LoginForm() {
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [alertSeverity, setAlertSeverity] = useState('success');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [alertMessage, setAlertMessage] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [emailHelperText, setEmailHelperText] = useState("");
+  const [passwordHelperText, setPasswordHelperText] = useState("");
+
+  // Password validation regex
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
 
   const validateForm = (email, password) => {
     let isValid = true;
-    setEmailError('');
-    setPasswordError('');
 
     // Validate email
     if (!emailValidator.validate(email)) {
-      setEmailError('Invalid email address');
+      setEmailError(true);
+      setEmailHelperText("Invalid email format");
       isValid = false;
+    } else {
+      setEmailError(false);
+      setEmailHelperText("");
     }
 
-    // Validate password (at least 8 characters, 1 uppercase, 1 lowercase, 1 digit, 1 special character)
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}$/;
+    // Validate password
     if (!passwordRegex.test(password)) {
-      setPasswordError(
-        'Password must be at least 8 characters, include uppercase, lowercase, a digit, and a special character.'
-      );
+      setPasswordError(true);
+      setPasswordHelperText("Password must have 8+ chars, uppercase, lowercase, number, and special char.");
       isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordHelperText("");
     }
 
     return isValid;
@@ -46,16 +53,15 @@ export default function LoginForm() {
     const email = data.get('email');
     const password = data.get('password');
 
-    if (validateForm(email, password)) {
-      setAlertMessage('Login Successful');
-      setAlertSeverity('success');
+    if (!validateForm(email, password)) {
       setShowAlert(true);
-      console.log({ email, password });
-    } else {
-      setAlertMessage('Validation Failed');
-      setAlertSeverity('error');
-      setShowAlert(true);
+      setAlertMessage("Validation Failed");
+      return;
     }
+
+    console.log({ email, password });
+    setAlertMessage("Login Successful");
+    setShowAlert(true);
   };
 
   return (
@@ -65,8 +71,11 @@ export default function LoginForm() {
         autoHideDuration={6000}
         onClose={() => setShowAlert(false)}
       >
-        <Alert severity={alertSeverity}>{alertMessage}</Alert>
+        <Alert severity={alertMessage === "Login Successful" ? "success" : "error"}>
+          {alertMessage}
+        </Alert>
       </Snackbar>
+
       <Grid
         item
         xs={false}
@@ -109,8 +118,8 @@ export default function LoginForm() {
               name="email"
               autoComplete="email"
               autoFocus
-              error={!!emailError}
-              helperText={emailError}
+              error={emailError}
+              helperText={emailHelperText}
             />
             <TextField
               margin="normal"
@@ -121,8 +130,8 @@ export default function LoginForm() {
               type="password"
               id="password"
               autoComplete="current-password"
-              error={!!passwordError}
-              helperText={passwordError}
+              error={passwordError}
+              helperText={passwordHelperText}
             />
             <Button
               type="submit"

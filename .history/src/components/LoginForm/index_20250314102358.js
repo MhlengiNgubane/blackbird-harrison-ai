@@ -1,14 +1,14 @@
-import { useState } from 'react';
 import Alert from '@mui/material/Alert';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import Snackbar from '@mui/material/Snackbar';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import logo from '../../assets/logo.svg';
 import emailValidator from 'email-validator';
+import { useState } from 'react';
+import logo from '../../assets/logo.svg';
 
 export default function LoginForm() {
   const [showAlert, setShowAlert] = useState(false);
@@ -60,13 +60,16 @@ export default function LoginForm() {
 
   return (
     <>
-      <Snackbar
-        open={showAlert}
-        autoHideDuration={6000}
-        onClose={() => setShowAlert(false)}
-      >
-        <Alert severity={alertSeverity}>{alertMessage}</Alert>
-      </Snackbar>
+      {showAlert &&
+        <Snackbar
+          open={showAlert}
+          autoHideDuration={6000}
+          onClose={() => setShowAlert(false)}
+          message={showAlert}
+        >
+          <Alert>{showAlert}</Alert>
+        </Snackbar>
+      }
       <Grid
         item
         xs={false}

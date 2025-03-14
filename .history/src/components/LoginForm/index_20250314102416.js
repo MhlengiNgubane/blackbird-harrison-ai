@@ -60,13 +60,16 @@ export default function LoginForm() {
 
   return (
     <>
-      <Snackbar
-        open={showAlert}
-        autoHideDuration={6000}
-        onClose={() => setShowAlert(false)}
-      >
-        <Alert severity={alertSeverity}>{alertMessage}</Alert>
-      </Snackbar>
+      {showAlert &&
+        <Snackbar
+          open={showAlert}
+          autoHideDuration={6000}
+          onClose={() => setShowAlert(false)}
+          message={showAlert}
+        >
+          <Alert>{showAlert}</Alert>
+        </Snackbar>
+      }
       <Grid
         item
         xs={false}

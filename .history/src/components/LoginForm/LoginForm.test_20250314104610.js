@@ -23,7 +23,7 @@ test('shows an error for an invalid password', async () => {
   render(<LoginForm />);
 
   fireEvent.change(screen.getByLabelText(/email address/i), { target: { value: 'user@example.com' } });
-  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: '12345' } });
+  fireEvent.change(screen.getByLabelText(/password/i), { target: { value: '12345' } }); // Invalid password
   fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
 
   await waitFor(() => {
